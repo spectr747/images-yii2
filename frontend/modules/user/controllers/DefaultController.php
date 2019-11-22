@@ -2,8 +2,8 @@
 
 namespace frontend\modules\user\controllers;
 
-use frontend\models\ResendVerificationEmailForm;
-use frontend\models\VerifyEmailForm;
+use frontend\modules\user\models\ResendVerificationEmailForm;
+use frontend\modules\user\models\VerifyEmailForm;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
