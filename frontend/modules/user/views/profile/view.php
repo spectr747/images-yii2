@@ -1,14 +1,46 @@
 <?php
 /* @var $this yii\web\View */
-/* @var $post frontend\models\User */
+/* @var $user frontend\models\User */
+/* @var $currentUser frontend\models\User */
+/* @var $modelPicture frontend\modules\user\models\forms\PictureForm */
 
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\HtmlPurifier;
+use frontend\modules\user\models\forms\PictureForm;
+use dosamigos\fileupload\FileUpload;
 ?>
 
 <h1><?php echo Html::encode($user->username); ?></h1>
 <p><?php echo HtmlPurifier::process($user->about); ?></p>
+<hr>
+
+<img src="<?php echo $user->getPicture(); ?>" />
+
+<?=
+FileUpload::widget([
+    'model' => $modelPicture,
+    'attribute' => 'picture',
+    'url' => ['/user/profile/upload-picture'], // your url, this is just for demo purposes,
+    'options' => ['accept' => 'image/*'],
+    'clientOptions' => [
+        'maxFileSize' => 2000000
+    ],
+    // Also, you can specify jQuery-File-Upload events
+    // see: https://github.com/blueimp/jQuery-File-Upload/wiki/Options#processing-callback-options
+    'clientEvents' => [
+        'fileuploaddone' => 'function(e, data) {
+                                console.log(e);
+                                console.log(data);
+                            }',
+        'fileuploadfail' => 'function(e, data) {
+                                console.log(e);
+                                console.log(data);
+                            }',
+    ],
+]);
+?>
+
 
 <a href="<?php echo Url::to(['/user/profile/subscribe', 'id' => $user->getId()]); ?>" class="btn btn-info">Subscribe</a>
 <a href="<?php echo Url::to(['/user/profile/unsubscribe', 'id' => $user->getId()]); ?>" class="btn btn-info">Unsubscribe</a>
@@ -18,13 +50,13 @@ use yii\helpers\HtmlPurifier;
 <?php if ($currentUser): ?>
     <h5>Friends, who are also following <?php echo Html::encode($user->username); ?>: </h5>
     <div class="row">
-        <?php foreach ($currentUser->getMutualSubscriptionsTo($user) as $item): ?>
+    <?php foreach ($currentUser->getMutualSubscriptionsTo($user) as $item): ?>
             <div class="col-md-12">
                 <a href="<?php echo Url::to(['/user/profile/view', 'nickname' => ($item['nickname']) ? $item['nickname'] : $item['id']]); ?>">
-                    <?php echo Html::encode($item['username']); ?>
+        <?php echo Html::encode($item['username']); ?>
                 </a>
             </div>                
-        <?php endforeach; ?>
+    <?php endforeach; ?>
     </div>
 <?php endif; ?>
 
@@ -51,13 +83,13 @@ use yii\helpers\HtmlPurifier;
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <?php foreach ($user->getSubscriptions() as $subscription): ?>
+<?php foreach ($user->getSubscriptions() as $subscription): ?>
                         <div class="col-md-12">
                             <a href="<?php echo Url::to(['/user/profile/view', 'nickname' => ($subscription['nickname']) ? $subscription['nickname'] : $subscription['id']]); ?>">
-                                <?php echo Html::encode($subscription['username']); ?>
+    <?php echo Html::encode($subscription['username']); ?>
                             </a>
                         </div>                
-                    <?php endforeach; ?>
+<?php endforeach; ?>
                 </div>
             </div>
             <div class="modal-footer">
@@ -78,13 +110,13 @@ use yii\helpers\HtmlPurifier;
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <?php foreach ($user->getFollowers() as $follower): ?>
+<?php foreach ($user->getFollowers() as $follower): ?>
                         <div class="col-md-12">
                             <a href="<?php echo Url::to(['/user/profile/view', 'nickname' => ($follower['nickname']) ? $follower['nickname'] : $follower['id']]); ?>">
-                                <?php echo Html::encode($follower['username']); ?>
+    <?php echo Html::encode($follower['username']); ?>
                             </a>
                         </div>                
-                    <?php endforeach; ?>
+<?php endforeach; ?>
                 </div>
             </div>
             <div class="modal-footer">
